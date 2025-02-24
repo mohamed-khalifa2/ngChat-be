@@ -12,7 +12,7 @@ export class User {
   email: string;
 
   @Prop({ required: true })
-  hashedPassword: string;
+  password: string;
 
   @Prop({ default: 'user', enum: ['user', 'admin'] })
   role: string;
@@ -21,7 +21,7 @@ export class User {
   profilePicture: string;
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.hashedPassword);
+    return bcrypt.compare(password, this.password);
   }
 }
 
