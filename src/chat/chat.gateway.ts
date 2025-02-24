@@ -1,29 +1,38 @@
 import {
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
+  SubscribeMessage,
+  MessageBody,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { ChatService } from './chat.service';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
 
-@WebSocketGateway(3002, {})
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+@WebSocketGateway()
+export class ChatGateway {
+  constructor(private readonly chatService: ChatService) {}
 
-  handleDisconnect(client: Socket) {
-    console.log('Client disconnected', client.id);
+  @SubscribeMessage('createChat')
+  create(@MessageBody() createChatDto: CreateChatDto) {
+    return this.chatService.create(createChatDto);
   }
 
-  handleConnection(client: Socket) {
-    console.log('Client connected');
+  @SubscribeMessage('findAllChat')
+  findAll() {
+    return this.chatService.findAll();
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, data: string): string {
-    console.log('Received message:', data);
-    this.server.emit('message', data); // Broadcast the message to all clients
-    return data;
+  @SubscribeMessage('findOneChat')
+  findOne(@MessageBody() id: number) {
+    return this.chatService.findOne(id);
+  }
+
+  @SubscribeMessage('updateChat')
+  update(@MessageBody() updateChatDto: UpdateChatDto) {
+    return this.chatService.update(updateChatDto.id, updateChatDto);
+  }
+
+  @SubscribeMessage('removeChat')
+  remove(@MessageBody() id: number) {
+    return this.chatService.remove(id);
   }
 }
