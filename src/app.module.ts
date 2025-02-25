@@ -6,10 +6,14 @@ import { GroupsModule } from './groups/groups.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { MessageModule } from './message/message.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/chatApp'),
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes it available in all modules
+    }),
+    MongooseModule.forRoot(process.env.db),
     UserModule,
     GroupsModule,
     AuthModule,
