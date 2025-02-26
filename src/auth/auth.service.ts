@@ -8,27 +8,28 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(email: string, password: string) {
     password = await bcrypt.hash(password, 10);
     return this.usersService.create({ email, password });
   }
 
-
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
 
-    const isValidPassword = await user.validatePassword(password)
+    const isValidPassword = await user.validatePassword(password);
 
-
-    if (!user || (!isValidPassword)) {
+    if (!user || !isValidPassword) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     return {
-      access_token: this.jwtService.sign({ sub: user.id, email: user.email }),
-
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+        name: user.name,
+      }),
     };
   }
 }

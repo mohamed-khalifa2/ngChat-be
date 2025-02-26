@@ -18,13 +18,10 @@ export class MessagesService {
     return message.save();
   }
 
-  async getMessagesBetweenUsers(user1: string, user2: string) {
+  async findMessages(sender: string, receiver: string) {
     return this.messageModel
       .find({
-        $or: [
-          { sender: user1, receiver: user2 },
-          { sender: user2, receiver: user1 },
-        ],
+        $and: [{ sender: sender }, { receiver: receiver }],
       })
       .populate('sender receiver')
       .exec();

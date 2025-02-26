@@ -12,7 +12,7 @@ export class Message {
   sender: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'User', default: null })
-  receiver?: Types.ObjectId;
+  receiver: Types.ObjectId;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);
