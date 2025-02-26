@@ -11,9 +11,8 @@ import { MessagesService } from './message.service';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class MessagesGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
-  constructor(private messagesService: MessagesService) {}
+  implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private messagesService: MessagesService) { }
 
   async handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
@@ -37,4 +36,20 @@ export class MessagesGateway
     client.broadcast.emit('newMessage', message);
     return message;
   }
+
+
+  @SubscribeMessage('fetchMessages')
+  async fetchMessages(
+    @MessageBody() sender: string, // Corrected MessageBody usage
+    @ConnectedSocket() client: Socket
+  ) {
+    console.log("sender", sender)
+    try {
+      const messages = await this.messagesService.getMessagesBySender(sender);
+      client.emit('messagesList', messages);
+    } catch (error) {
+      client.emit('messagesList', { error: 'Failed to fetch messages' });
+    }
+  }
+
 }

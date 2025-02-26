@@ -7,10 +7,15 @@ import { Message, MessageDocument } from './entities/message.entity';
 export class MessagesService {
   constructor(
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
-  ) {}
+  ) { }
 
   async create(content: string, sender: string, group: string) {
     const message = new this.messageModel({ content, sender, group });
     return message.save();
+  }
+
+  async getMessagesBySender(sender: string): Promise<Message[]> {
+    return await this.messageModel.find({ sender });
+
   }
 }
