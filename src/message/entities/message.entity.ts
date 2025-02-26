@@ -11,8 +11,8 @@ export class Message {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   sender: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Group', required: true })
-  group: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User', default: null })
+  receiver?: Types.ObjectId;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

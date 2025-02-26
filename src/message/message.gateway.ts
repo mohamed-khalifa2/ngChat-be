@@ -26,13 +26,12 @@ export class MessagesGateway
   @SubscribeMessage('sendMessage')
   async handleMessage(
     @MessageBody()
-    messageData: { content: string; sender: string; group: string },
+    messageData: { content: string; sender: string },
     @ConnectedSocket() client: Socket,
   ) {
     const message = await this.messagesService.create(
       messageData.content,
       messageData.sender,
-      messageData.group,
     );
     client.broadcast.emit('newMessage', message);
     return message;
