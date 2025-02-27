@@ -8,11 +8,11 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
-  async register(email: string, password: string) {
+  async register(name: string, email: string, password: string) {
     password = await bcrypt.hash(password, 10);
-    return this.usersService.create({ email, password });
+    return this.usersService.create({ name, email, password });
   }
 
   async login(email: string, password: string) {
